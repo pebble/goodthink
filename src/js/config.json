@@ -1,0 +1,73 @@
+[
+{
+  "type": "text",
+  "id": "optin-text",
+  "defaultValue": "The Pebble Happiness App is a one-week program that lets you check in on how you're feeling. You'll get an hourly prompt (during waking hours only!) that lets you rate your mood and energy level. The prompt will also ask you where you are, who you're with, and what activities you've done recently. This information will help us provide you with deeper insights on how different environments and events impact your mood.<br/><br/>At the end of the week, we’ll send you an email report with your results through a transactional email service. Pebble will not use or share your information for any purpose beyond this app (although we may use anonymous or aggregated data to improve the app and for other internal business purposes).<br/><br/>Except as described in this notice, the Pebble Privacy Policy covers the collection, use, sharing and protection of your information.<br/><br/>This is not a marketing initiative or an attempt to fish for data -- its sole purpose is to be a fun, interesting experience for our users.  We hope you'll enjoy the app as much as we have!"
+},
+{
+  "type": "toggle",
+  "appKey": "optin",
+  "label": "Activate Pebble Happiness App",
+  "defaultValue": false
+},
+{
+  "type": "section",
+  "items": [
+    {
+      "type": "heading",
+      "defaultValue": "Hourly survey"
+    },
+    {
+      "type": "input",
+      "appKey": "hourly_survey_start_time",
+      "defaultValue": "08:00",
+      "label": "Start time",
+      "attributes": {
+        "type": "time"
+      }
+    },
+    {
+      "type": "input",
+      "appKey": "hourly_survey_end_time",
+      "defaultValue": "21:00",
+      "label": "End time",
+      "attributes": {
+        "type": "time"
+      }
+    }
+  ]
+},
+{
+  "type": "section",
+  "items": [
+    {
+      "type": "heading",
+      "defaultValue": "Daily survey"
+    },
+    {
+      "type": "input",
+      "appKey": "daily_survey_time",
+      "defaultValue": "20:00",
+      "label": "Survey time",
+      "attributes": {
+        "type": "time"
+      }
+    }
+  ]
+},
+{
+  "type": "section",
+  "items": [
+    {
+      "type": "slider",
+      "appKey": "snooze_option",
+      "defaultValue": 10,
+      "label": "Snooze option (minutes)",
+      "description": "Remind me to take the survey in X minutes",
+      "min": 5,
+      "max": 20
+    }
+  ]
+},
+{ "type": "submit", "defaultValue": "Done" }
+]

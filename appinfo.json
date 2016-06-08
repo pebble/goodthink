@@ -1,0 +1,179 @@
+{
+  "uuid": "8d1fb143-fa2a-4f1c-9361-2542f14cda72",
+  "shortName": "Emotion Study",
+  "longName": "Emotion Study",
+  "companyName": "Pebble",
+  "versionCode": 18,
+  "versionLabel": "0.18",
+  "enableMultiJS": true,
+  "watchapp": {
+    "watchface": false
+  },
+  "capabilities": [
+    "configurable",
+    "health"
+  ],
+  "appKeys": {
+    "send_response"  : 10,
+
+    "event_type"    : 105,
+
+    "energy_score"  : 1001,
+    "mood_id"       : 1002,
+    "people_id"     : 1003,
+    "activity_ids"  : 1004,
+    "activity_data" : 1005,
+    "location_id"   : 1006,
+    "people_other"  : 1007,
+    "activity_other": 1008,
+    "location_other": 1009,
+    "user_time"     : 1010,
+    "is_old"        : 1011,
+
+    "health_stepcount"             : 1100,
+    "health_activeseconds"         : 1101,
+    "health_walkeddistancemeters"  : 1102,
+    "health_sleepseconds"          : 1103,
+    "health_sleeprestfulseconds"   : 1104,
+    "health_restingkcalories"      : 1105,
+    "health_activekcalories"       : 1106,
+    "health_minute_steps"          : 1107,
+    "health_minute_orientation"    : 1108,
+    "health_minute_vmc"            : 1109,
+    "health_minute_is_invalid"     : 1110,
+
+    "satisfaction_level"  : 2001,
+    "feeling_id"          : 2002,
+    "feeling_day_more"    : 2003,
+
+    "hourly_survey_start_time" : 10000,
+    "hourly_survey_end_time"   : 10001,
+    "daily_survey_time"        : 10002,
+    "snooze_option"            : 10003,
+    "optin"                    : 10004
+  },
+  "resources": {
+    "media": [
+      {
+        "type": "bitmap",
+        "name": "IMAGE_HAPPY",
+        "file": "images/happy.png"
+      },
+      {
+        "type": "bitmap",
+        "name": "IMAGE_MOOD",
+        "file": "images/mood.png"
+      },
+      {
+        "type": "bitmap",
+        "name": "IMAGE_SENDING",
+        "file": "images/sending.png"
+      },
+      {
+        "type": "bitmap",
+        "name": "IMAGE_HOUR",
+        "file": "images/hour.png"
+      },
+      {
+        "type": "bitmap",
+        "name": "IMAGE_DAY",
+        "file": "images/day.png"
+      },
+      {
+        "type": "bitmap",
+        "name": "IMAGE_SPECTRUM",
+        "file": "images/spectrum.png"
+      },
+      {
+        "type":"bitmap",
+        "name":"IMAGE_MOOD_AWESOME",
+        "file":"images/mood_awesome.png"
+      },
+      {
+        "type":"bitmap",
+        "name":"IMAGE_MOOD_HAPPY",
+        "file":"images/mood_happy.png"
+      },
+      {
+        "type":"bitmap",
+        "name":"IMAGE_MOOD_NEUTRAL",
+        "file":"images/mood_neutral.png"
+      },
+      {
+        "type":"bitmap",
+        "name":"IMAGE_MOOD_NOT_HAPPY",
+        "file":"images/mood_not_happy.png"
+      },
+      {
+        "type":"bitmap",
+        "name":"IMAGE_MOOD_ANGRY",
+        "file":"images/mood_angry.png"
+      },
+      {
+        "type":"bitmap",
+        "name":"IMAGE_UP",
+        "file":"images/up.png"
+      },
+      {
+        "type":"bitmap",
+        "name":"IMAGE_DOWN",
+        "file":"images/down.png"
+      },
+      {
+        "type":"bitmap",
+        "name":"IMAGE_SELECT", "memoryFormat": "1Bit",
+        "file":"images/select.png"
+      },
+      {
+        "type":"bitmap",
+        "name":"IMAGE_UNCHECKED", "memoryFormat": "1Bit",
+        "file":"images/unchecked.png"
+      },
+      {
+        "type":"bitmap",
+        "name":"IMAGE_CROSS", "memoryFormat": "1Bit",
+        "file":"images/cross.png"
+      },
+      {
+        "type":"bitmap",
+        "name":"IMAGE_ZZZ", "memoryFormat": "1Bit",
+        "file":"images/zzz.png"
+      },
+      {
+        "type":"bitmap",
+        "name":"IMAGE_TICK", "memoryFormat": "1Bit",
+        "file":"images/tick.png"
+      },
+      {
+        "type":"bitmap",
+        "name":"IMAGE_TICK2", "memoryFormat": "1Bit",
+        "file":"images/tick2.png"
+      },
+      {
+        "type": "raw",
+        "name": "CONFIRM_SEQUENCE",
+        "file": "pdc/confirm_sequence.pdc"
+      },
+      {
+        "type": "raw",
+        "name": "SENT_SEQUENCE",
+        "file": "pdc/sent_sequence.pdc"
+      },
+      {
+        "type":"bitmap",
+        "name":"IMAGE_WARNING",
+        "file":"images/warning.png"
+      },
+      {
+        "type": "raw",
+        "name": "DISMISS_SEQUENCE",
+        "file": "pdc/dismiss_sequence.pdc"
+      }
+    ]
+  },
+  "targetPlatforms": [
+    "basalt",
+    "chalk"
+  ],
+  "sdkVersion": "3"
+}
