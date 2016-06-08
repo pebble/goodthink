@@ -3,8 +3,8 @@
   "shortName": "Emotion Study",
   "longName": "Emotion Study",
   "companyName": "Pebble",
-  "versionCode": 19,
-  "versionLabel": "0.19",
+  "versionCode": 20,
+  "versionLabel": "0.20",
   "enableMultiJS": true,
   "watchapp": {
     "watchface": false
