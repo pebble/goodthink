@@ -85,29 +85,9 @@
         "file": "images/spectrum.png"
       },
       {
-        "type":"bitmap",
-        "name":"IMAGE_MOOD_AWESOME",
-        "file":"images/mood_awesome.png"
-      },
-      {
-        "type":"bitmap",
-        "name":"IMAGE_MOOD_HAPPY",
-        "file":"images/mood_happy.png"
-      },
-      {
-        "type":"bitmap",
-        "name":"IMAGE_MOOD_NEUTRAL",
-        "file":"images/mood_neutral.png"
-      },
-      {
-        "type":"bitmap",
-        "name":"IMAGE_MOOD_NOT_HAPPY",
-        "file":"images/mood_not_happy.png"
-      },
-      {
-        "type":"bitmap",
-        "name":"IMAGE_MOOD_ANGRY",
-        "file":"images/mood_angry.png"
+        "type": "bitmap",
+        "name": "IMAGE_MOODS",
+        "file": "images/moods.png"
       },
       {
         "type":"bitmap",
@@ -118,6 +98,16 @@
         "type":"bitmap",
         "name":"IMAGE_DOWN",
         "file":"images/down.png"
+      },
+      {
+        "type":"bitmap",
+        "name":"IMAGE_UP2",
+        "file":"images/up2.png"
+      },
+      {
+        "type":"bitmap",
+        "name":"IMAGE_DOWN2",
+        "file":"images/down2.png"
       },
       {
         "type":"bitmap",

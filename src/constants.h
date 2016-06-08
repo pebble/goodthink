@@ -1,35 +1,5 @@
 #pragma once
 
-#define NB_OF_MOODS 5
-static const int MOOD_BIG_RESOURCE_IDS[NB_OF_MOODS] = {
-  RESOURCE_ID_IMAGE_MOOD_ANGRY,
-  RESOURCE_ID_IMAGE_MOOD_NOT_HAPPY,
-  RESOURCE_ID_IMAGE_MOOD_NEUTRAL,
-  RESOURCE_ID_IMAGE_MOOD_HAPPY,
-  RESOURCE_ID_IMAGE_MOOD_AWESOME,
-};
-static const char* MOOD_TEXTS[NB_OF_MOODS] = {
-  "Very Sad",
-  "Sad",
-  "Neutral",
-  "Happy",
-  "Very Happy",
-};
-static const uint8_t MOOD_IDS[NB_OF_MOODS] = {
-  0,
-  1,
-  2,
-  3,
-  4,
-};
-static const uint8_t MOOD_COLORS[NB_OF_MOODS] = {
-  GColorFashionMagentaARGB8,
-  GColorShockingPinkARGB8,
-  GColorVividCeruleanARGB8,
-  GColorGreenARGB8,
-  GColorYellowARGB8,
-};
-
 #define NB_OF_PEOPLES 6
 static const char* PEOPLE_TEXTS[NB_OF_PEOPLES] = {
   "Nobody",
