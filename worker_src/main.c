@@ -97,7 +97,7 @@ static void message_handler(uint16_t type, AppWorkerMessage *data){
   		app_timer_cancel(s_hourly_timer);
     s_hourly_timer = app_timer_register(next_snooze_event_timeout(), hourly_timer_cb, NULL);
   } 
-  else if(type == MESSAGE_SNOOZE_HOURLY){
+  else if(type == MESSAGE_SNOOZE_DAILY){
   	if(s_daily_timer)
   		app_timer_cancel(s_daily_timer);
     s_daily_timer = app_timer_register(next_snooze_event_timeout(), daily_timer_cb, NULL);
