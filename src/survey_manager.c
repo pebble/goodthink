@@ -106,7 +106,7 @@ static void satisfaction_level_changed(SatisfactionLevel level){
 	s_daily_survey.satisfaction_level = level;
 	APP_LOG(APP_LOG_LEVEL_INFO, "SatisfactionLevel : %d", level);
 	window_stack_pop_all(true);
-	dialog_choice_window_push("Tell us more about your feelings on today", 0, feeling_more, RESOURCE_ID_IMAGE_TICK, 0, 0, add_health_data_day, RESOURCE_ID_IMAGE_CROSS);
+	dialog_choice_window_push("\nTell us more about your feelings on today", 0, feeling_more, RESOURCE_ID_IMAGE_TICK, 0, 0, add_health_data_day, RESOURCE_ID_IMAGE_CROSS);
 }
 
 static void feeling_changed(uint8_t selection){
