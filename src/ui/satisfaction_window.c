@@ -1,11 +1,9 @@
 #include <pebble.h>
 
 #include "model.h"
-#include "colors.h"
 
 static Window *s_window;
 static GBitmap *s_bitmap;
-static BitmapLayer *s_bitmap_layer;
 static Layer *s_layer;
 
 static TextLayer *s_title_layer;
@@ -16,21 +14,33 @@ static TextLayer *s_high_layer;
 static SatisfactionLevelChangedHandler s_satisfactionchanged_handler;
 static SatisfactionLevel s_satisfaction_level;
 
-static void up_click_handler(ClickRecognizerRef recognizer, void *context) {
-  if(s_satisfaction_level > 3)
-    s_satisfaction_level-=4;
-  layer_mark_dirty(s_layer);
-}
+static ActionBarLayer *action_bar;
+static GBitmap *up_icon;
+static GBitmap *down_icon;
+static GBitmap *select_icon;
 
-static void down_click_handler(ClickRecognizerRef recognizer, void *context) {
+static const GPathInfo ARROW_PATH_INFO = {
+  .num_points = 4,
+  .points = (GPoint []) {{5, 0}, {3, 85}, {-3, 85}, {-5, 0}}
+};
+static GPath *s_my_path_ptr = NULL;
+
+
+static void up_click_handler(ClickRecognizerRef recognizer, void *context) {
   if(s_satisfaction_level < SATISFACTION_LEVEL_MAX - 4)
     s_satisfaction_level+=4;
   layer_mark_dirty(s_layer);
 }
 
+static void down_click_handler(ClickRecognizerRef recognizer, void *context) {
+  if(s_satisfaction_level > 3)
+    s_satisfaction_level-=4;
+  layer_mark_dirty(s_layer);
+}
+
 static void select_click_handler(ClickRecognizerRef recognizer, void *context) {
   if(s_satisfactionchanged_handler) {
-  	s_satisfactionchanged_handler(s_satisfaction_level);
+    s_satisfactionchanged_handler(s_satisfaction_level);
   }
 }
 
@@ -41,94 +51,117 @@ static void click_config_provider(void *context) {
 }
 
 static void layer_update_proc(Layer *layer, GContext *ctx) {
-  GRect bounds = layer_get_bounds(layer);
-  bounds.size.h -= 10;
-  bounds.size.h *= 2;
-  bounds = grect_inset(bounds, GEdgeInsets(15));
+#ifdef PBL_ROUND 
+  graphics_draw_bitmap_in_rect(ctx, s_bitmap, (GRect){.origin={73,10},.size={73,160}});
+  gpath_rotate_to(s_my_path_ptr, DEG_TO_TRIGANGLE(25 + s_satisfaction_level * 130 / SATISFACTION_LEVEL_MAX));
+#else
+  graphics_draw_bitmap_in_rect(ctx, s_bitmap, (GRect){.origin={51,3},.size={63,162}});
+  gpath_rotate_to(s_my_path_ptr, DEG_TO_TRIGANGLE(15 + s_satisfaction_level * 150 / SATISFACTION_LEVEL_MAX));
+#endif
+  
 
-  uint32_t angle = s_satisfaction_level * 180 / SATISFACTION_LEVEL_MAX;
-  GPoint point = gpoint_from_polar(bounds, GOvalScaleModeFillCircle, DEG_TO_TRIGANGLE(270 + angle));
+  // Fill the path:
+  graphics_context_set_fill_color(ctx, GColorWhite);
+  gpath_draw_filled(ctx, s_my_path_ptr);
+  // Stroke the path:
+  graphics_context_set_stroke_width(ctx, 3);
+  graphics_context_set_stroke_color(ctx, GColorBlack);
+  gpath_draw_outline(ctx, s_my_path_ptr);
 
-  graphics_context_set_fill_color(ctx, getColorFromAngle(angle));
-  graphics_fill_circle(ctx, point, 10);
-  graphics_draw_circle(ctx, point, 10);
+  graphics_context_set_fill_color(ctx, GColorBlack);
+#ifdef PBL_ROUND 
+  graphics_fill_circle(ctx, (GPoint){157, 90}, 67);
+#else
+  graphics_fill_circle(ctx, (GPoint){133, 84}, 70);
+#endif
 }
 
 static void window_load(Window *window) {
   Layer *window_layer = window_get_root_layer(window);
   GRect bounds = layer_get_bounds(window_layer);
 
-  s_bitmap = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_SPECTRUM);
-  GRect layerbounds = gbitmap_get_bounds(s_bitmap);
-
-  layerbounds.size.w += 10;
-  layerbounds.size.h += 20;
-  layerbounds.origin.x = (bounds.size.w - layerbounds.size.w) / 2;
-  layerbounds.origin.y = (bounds.size.h - layerbounds.size.h) / 2;
-
-  s_bitmap_layer = bitmap_layer_create(layerbounds);
-  bitmap_layer_set_alignment(s_bitmap_layer, GAlignCenter);
-  bitmap_layer_set_bitmap(s_bitmap_layer, s_bitmap);
-  bitmap_layer_set_compositing_mode(s_bitmap_layer, GCompOpSet);
-  layer_add_child(window_layer, bitmap_layer_get_layer(s_bitmap_layer));
-
-  s_layer = layer_create(layerbounds);
+  s_layer = layer_create(bounds);
   layer_set_update_proc(s_layer, layer_update_proc);
   layer_add_child(window_layer, s_layer);
 
-  s_title_layer = text_layer_create(GRect(0, PBL_IF_ROUND_ELSE(15,10), bounds.size.w, 30));
-  text_layer_set_text_color(s_title_layer, GColorWhite);
-  text_layer_set_background_color(s_title_layer, GColorClear);
-  text_layer_set_text_alignment(s_title_layer, GTextAlignmentCenter);
-  text_layer_set_text(s_title_layer, PBL_IF_ROUND_ELSE("What is your\nsatisfaction level ?","What is your current\nsatisfaction level ?"));
-  layer_add_child(window_layer, text_layer_get_layer(s_title_layer));
-
-  s_low_layer = text_layer_create(GRect(PBL_IF_ROUND_ELSE(25,5), layerbounds.origin.y + layerbounds.size.h - 10, bounds.size.w, 30));
-  text_layer_set_text_color(s_low_layer, GColorWhite);
+  s_low_layer = text_layer_create(GRect(0, bounds.size.h - PBL_IF_ROUND_ELSE(30,20), bounds.size.w - PBL_IF_ROUND_ELSE(20,30), 30));
+  text_layer_set_text_color(s_low_layer, GColorBlack);
   text_layer_set_background_color(s_low_layer, GColorClear);
-  text_layer_set_text_alignment(s_low_layer, GTextAlignmentLeft);
-  text_layer_set_font(s_low_layer, fonts_get_system_font(FONT_KEY_GOTHIC_14));
+  text_layer_set_text_alignment(s_low_layer, GTextAlignmentCenter);
+  text_layer_set_font(s_low_layer, fonts_get_system_font(FONT_KEY_GOTHIC_14_BOLD));
   text_layer_set_text(s_low_layer, "Nothing");
   layer_add_child(window_layer, text_layer_get_layer(s_low_layer));
 
-  s_medium_layer = text_layer_create(GRect(0, bounds.size.h / 2 - 15, bounds.size.w, 30));
-  text_layer_set_text_color(s_medium_layer, GColorWhite);
+  s_medium_layer = text_layer_create(GRect(PBL_IF_ROUND_ELSE(25,10), bounds.size.h / 2 - 9, bounds.size.w - 30, 30));
+  text_layer_set_text_color(s_medium_layer, GColorBlack);
   text_layer_set_background_color(s_medium_layer, GColorClear);
-  text_layer_set_text_alignment(s_medium_layer, GTextAlignmentCenter);
-  text_layer_set_font(s_medium_layer, fonts_get_system_font(FONT_KEY_GOTHIC_14));
+  text_layer_set_text_alignment(s_medium_layer, GTextAlignmentLeft);
+  text_layer_set_font(s_medium_layer, fonts_get_system_font(FONT_KEY_GOTHIC_14_BOLD));
   text_layer_set_text(s_medium_layer, "50%");
   layer_add_child(window_layer, text_layer_get_layer(s_medium_layer));
 
-  s_high_layer = text_layer_create(GRect(0, layerbounds.origin.y + layerbounds.size.h - 10, bounds.size.w - PBL_IF_ROUND_ELSE(25,5), 30));
-  text_layer_set_text_color(s_high_layer, GColorWhite);
+  s_high_layer = text_layer_create(GRect(0, PBL_IF_ROUND_ELSE(10,0), bounds.size.w - PBL_IF_ROUND_ELSE(25,45), 30));
+  text_layer_set_text_color(s_high_layer, GColorBlack);
   text_layer_set_background_color(s_high_layer, GColorClear);
-  text_layer_set_text_alignment(s_high_layer, GTextAlignmentRight);
-  text_layer_set_font(s_high_layer, fonts_get_system_font(FONT_KEY_GOTHIC_14));
-  text_layer_set_text(s_high_layer, "Everything\n& More");
+  text_layer_set_text_alignment(s_high_layer, GTextAlignmentCenter);
+  text_layer_set_font(s_high_layer, fonts_get_system_font(FONT_KEY_GOTHIC_14_BOLD));
+  text_layer_set_text(s_high_layer, PBL_IF_ROUND_ELSE("100%\n& More     ","Everything\n& More"));
   layer_add_child(window_layer, text_layer_get_layer(s_high_layer));
 
+  s_title_layer = text_layer_create(GRect(0, bounds.size.h / 2 - 23, bounds.size.w - PBL_IF_ROUND_ELSE(40,30), 14*3));
+  text_layer_set_text_color(s_title_layer, GColorWhite);
+  text_layer_set_background_color(s_title_layer, GColorClear);
+  text_layer_set_text_alignment(s_title_layer, GTextAlignmentRight);
+  text_layer_set_font(s_title_layer, fonts_get_system_font(FONT_KEY_GOTHIC_14_BOLD));
+  text_layer_set_text(s_title_layer, "TODAY\nGOAL\nLEVEL");
+  layer_add_child(window_layer, text_layer_get_layer(s_title_layer));
+
+
+  // Initialize the action bar:
+  action_bar = action_bar_layer_create();
+  // Associate the action bar with the window:
+  action_bar_layer_add_to_window(action_bar, window);
+  // Set the click config provider:
+  action_bar_layer_set_click_config_provider(action_bar, click_config_provider);
+
+  // Change the background color
+  action_bar_layer_set_background_color(action_bar, GColorBlack);
+  // Set the icons:
+  up_icon = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_UP2);
+  down_icon = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_DOWN2);
+  select_icon = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_TICK);
+  action_bar_layer_set_icon(action_bar, BUTTON_ID_UP,     up_icon);
+  action_bar_layer_set_icon(action_bar, BUTTON_ID_DOWN,   down_icon);
+  action_bar_layer_set_icon(action_bar, BUTTON_ID_SELECT, select_icon);
 }
 
 static void window_appear(Window *window) {
-  if( !s_bitmap ) {
-  	s_bitmap = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_SPECTRUM);
-  	bitmap_layer_set_bitmap(s_bitmap_layer, s_bitmap);
-  }
+  s_bitmap = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_SPECTRUM);
+  s_my_path_ptr = gpath_create(&ARROW_PATH_INFO);
+  gpath_move_to(s_my_path_ptr, PBL_IF_ROUND_ELSE(GPoint(156,90),GPoint(132,84)));
 }
 
 static void window_disappear(Window *window) {
+  gpath_destroy(s_my_path_ptr);
   gbitmap_destroy(s_bitmap);
-  s_bitmap = NULL;
 }
 
 static void window_unload(Window *window) {
-  bitmap_layer_destroy(s_bitmap_layer);
-  gbitmap_destroy(s_bitmap);
   layer_destroy(s_layer);
+
   text_layer_destroy(s_title_layer);
   text_layer_destroy(s_low_layer);
   text_layer_destroy(s_medium_layer);
   text_layer_destroy(s_high_layer);
+
+  // Destroy the action bar
+  action_bar_layer_destroy(action_bar);
+
+  // Destroy the action bar icons
+  gbitmap_destroy(up_icon);
+  gbitmap_destroy(down_icon);
+  gbitmap_destroy(select_icon);
+
   window_destroy(s_window);
 }
 
@@ -137,14 +170,13 @@ void show_satisfaction_window(SatisfactionLevel initial_level, SatisfactionLevel
   s_satisfactionchanged_handler = handler;
 
   s_window = window_create();
-  window_set_background_color(s_window, GColorBlack);
+  window_set_background_color(s_window, GColorWhite);
   window_set_window_handlers(s_window, (WindowHandlers) {
     .load = window_load,
     .appear = window_appear,
     .disappear = window_disappear,
     .unload = window_unload,
   });
-  window_set_click_config_provider(s_window, click_config_provider);
   window_stack_push(s_window, true);
 }
 
