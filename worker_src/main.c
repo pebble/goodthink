@@ -29,14 +29,19 @@ static uint32_t next_hourly_event_timeout(){
 	time_t t = time(NULL);
 	time_t t_event = t + SECONDS_PER_HOUR;
 
-	time_t t_sod = time_start_of_today();
+	time_t t_sod   = time_start_of_today();
 	time_t t_start = t_sod + enamel_get_hourly_survey_start_time() * SECONDS_PER_MINUTE;
-	time_t t_end = t_sod + enamel_get_hourly_survey_end_time() * SECONDS_PER_MINUTE;
+	time_t t_end   = t_sod + enamel_get_hourly_survey_end_time()   * SECONDS_PER_MINUTE;
 
-	if(t_event < t_start) {
+	if(t_end < t_start){
+		if(t_end < t_event && t_event < t_start){
+			t_event = t_start;
+		}
+	}
+	else if(t_event < t_start) {
 		t_event = t_start;
 	}
-	else if(t > t_end) {
+	else if(t_end < t_event) {
 		t_event = t_start + SECONDS_PER_DAY;
 	}
 	return (t_event - t) * 1000;
