@@ -29,14 +29,19 @@ static uint32_t next_hourly_event_timeout(){
 	time_t t = time(NULL);
 	time_t t_event = t + SECONDS_PER_HOUR;
 
-	time_t t_sod = time_start_of_today();
+	time_t t_sod   = time_start_of_today();
 	time_t t_start = t_sod + enamel_get_hourly_survey_start_time() * SECONDS_PER_MINUTE;
-	time_t t_end = t_sod + enamel_get_hourly_survey_end_time() * SECONDS_PER_MINUTE;
+	time_t t_end   = t_sod + enamel_get_hourly_survey_end_time()   * SECONDS_PER_MINUTE;
 
-	if(t_event < t_start) {
+	if(t_end < t_start){
+		if(t_end < t_event && t_event < t_start){
+			t_event = t_start;
+		}
+	}
+	else if(t_event < t_start) {
 		t_event = t_start;
 	}
-	else if(t > t_end) {
+	else if(t_end < t_event) {
 		t_event = t_start + SECONDS_PER_DAY;
 	}
 	return (t_event - t) * 1000;
@@ -97,7 +102,7 @@ static void message_handler(uint16_t type, AppWorkerMessage *data){
   		app_timer_cancel(s_hourly_timer);
     s_hourly_timer = app_timer_register(next_snooze_event_timeout(), hourly_timer_cb, NULL);
   } 
-  else if(type == MESSAGE_SNOOZE_HOURLY){
+  else if(type == MESSAGE_SNOOZE_DAILY){
   	if(s_daily_timer)
   		app_timer_cancel(s_daily_timer);
     s_daily_timer = app_timer_register(next_snooze_event_timeout(), daily_timer_cb, NULL);
