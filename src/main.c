@@ -169,7 +169,7 @@ static void optin(bool optin){
       time_t now = time(0);
       time_t start_time;
       persist_read_data(PKEY_START_TIME,&start_time,sizeof(time_t));
-      if(now > start_time + 14 * SECONDS_PER_DAY){
+      if(now > start_time + 7 * SECONDS_PER_DAY){
         dialog_choice_window_push(
           PBL_IF_ROUND_ELSE("Thank you for your participation.\n\nStay tuned for\nyour results.","Thank you for your participation.\n\nStay tuned for your results."), 
           RESOURCE_ID_IMAGE_HAPPY, 
