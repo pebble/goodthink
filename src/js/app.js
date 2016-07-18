@@ -1,13 +1,13 @@
-var appinfo = require('appinfo.json');
+var packageinfo = require('../../package.json');
 
-var Clay = require('lib/clay');
-var clayConfig = require('config.json');
-var customClay = require('custom-clay');
+var Clay = require('pebble-clay');
+var clayConfig = require('./config.json');
+var customClay = require('./custom-clay');
 var clay = new Clay(clayConfig, customClay, {autoHandleEvents: false});
 
-var ajax = require('lib/ajax');
+var ajax = require('./lib/ajax');
 
-var OWMWeather = require('lib/owm_weather.js')
+var OWMWeather = require('./lib/owm_weather.js')
 var owmWeather = new OWMWeather();
 
 var coordinates = null;
@@ -20,7 +20,7 @@ function success_weather(weather_) {
 }
 
 Pebble.addEventListener('ready', function(e) {
-  console.log(appinfo.longName + " " + appinfo.versionLabel + " ready !");
+  console.log(packageinfo.pebble.displayName + " " + packageinfo.version + " ready !");
 
   Pebble.getTimelineToken(function(token) {
     timeline_token = token;

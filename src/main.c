@@ -8,6 +8,8 @@
 #include "vibrate.h"
 #include "communication.h"
 
+#include <pebble-events/pebble-events.h>
+
 #define PKEY_EVENT_TYPE 0
 #define EVENT_HOURLY 0
 #define EVENT_DAILY  1
@@ -17,8 +19,6 @@
 #define MESSAGE_SNOOZE_HOURLY 0
 #define MESSAGE_SNOOZE_DAILY  1
 #define MESSAGE_CONF_CHANGED  2
-
-#define KEY_SEND_RESPONSE 10
 
 #define SURVEY1_PERSIST_KEY  100000
 #define SURVEY2_PERSIST_KEY  110000
@@ -100,7 +100,7 @@ static void saveOldData(){
 }
 
 static void in_received_handler(DictionaryIterator *iter, void *context) {
-  Tuple *tuple_response = dict_find(iter, KEY_SEND_RESPONSE);
+  Tuple *tuple_response = dict_find(iter, MESSAGE_KEY_send_response);
   if(tuple_response){
     if(oldKey){
       persist_delete(oldKey);
@@ -112,14 +112,6 @@ static void in_received_handler(DictionaryIterator *iter, void *context) {
         persist_write_data(PKEY_START_TIME, &now, sizeof(time_t));
       }
       show_pdc_window(RESOURCE_ID_CONFIRM_SEQUENCE, false);
-    }
-  }
-  else {
-    enamel_save();
-    AppWorkerMessage message;
-    app_worker_send_message(MESSAGE_CONF_CHANGED, &message);
-    if(s_optin != enamel_get_optin()){
-      optin(enamel_get_optin());
     }
   }
 }
@@ -204,14 +196,21 @@ static void optin(bool optin){
       AppWorkerResult result = app_worker_launch();
     }
   }
+}
 
-  
+static void updateSettings() {
+  optin(enamel_get_optin());
 }
 
 static void init(){
-  enamel_init(0, 3000);
-  enamel_register_custom_inbox_received(in_received_handler);
-  app_message_register_outbox_failed(appMessageOutboxFailed);
+  enamel_init();
+
+  enamel_register_settings_received(updateSettings);
+
+  events_app_message_register_inbox_received(in_received_handler, NULL);
+  events_app_message_register_outbox_failed(appMessageOutboxFailed, NULL);
+
+  events_app_message_open(); 
 
   optin(enamel_get_optin());
 }

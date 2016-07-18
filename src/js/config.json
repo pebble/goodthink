@@ -6,7 +6,7 @@
 },
 {
   "type": "toggle",
-  "appKey": "optin",
+  "messageKey": "optin",
   "label": "Activate Pebble Happiness App",
   "defaultValue": false
 },
@@ -19,7 +19,7 @@
     },
     {
       "type": "input",
-      "appKey": "hourly_survey_start_time",
+      "messageKey": "hourly_survey_start_time",
       "defaultValue": "08:00",
       "label": "Start time",
       "attributes": {
@@ -28,7 +28,7 @@
     },
     {
       "type": "input",
-      "appKey": "hourly_survey_end_time",
+      "messageKey": "hourly_survey_end_time",
       "defaultValue": "21:00",
       "label": "End time",
       "attributes": {
@@ -46,7 +46,7 @@
     },
     {
       "type": "input",
-      "appKey": "daily_survey_time",
+      "messageKey": "daily_survey_time",
       "defaultValue": "20:00",
       "label": "Survey time",
       "attributes": {
@@ -60,7 +60,7 @@
   "items": [
     {
       "type": "slider",
-      "appKey": "snooze_option",
+      "messageKey": "snooze_option",
       "defaultValue": 10,
       "label": "Snooze option (minutes)",
       "description": "Remind me to take the survey in X minutes",
