@@ -160,7 +160,9 @@
       "health_sleepseconds": 1103,
       "health_activekcalories": 1106,
       "optin": 10004,
-      "energy_score": 1001
+      "energy_score": 1001,
+      "study_duration": 10005,
+      "hourly_popups": 10006
     },
     "enableMultiJS": true,
     "displayName": "Emotion Study",

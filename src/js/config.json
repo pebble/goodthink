@@ -18,21 +18,40 @@
       "defaultValue": "Hourly survey"
     },
     {
+      "type": "select",
+      "messageKey": "hourly_popups",
+      "defaultValue": "0",
+      "label": "How may popups per day ?",
+      "description": "if 4 per day, then 9am, 1pm, 5pm, 8pm",
+      "options": [
+        { 
+          "label": "Hourly", 
+          "value": 0
+        },
+        { 
+          "label": "4/day",
+          "value": 1 
+        }
+      ]
+    },
+    {
       "type": "input",
       "messageKey": "hourly_survey_start_time",
-      "defaultValue": "08:00",
+      "defaultValue": "09:00",
       "label": "Start time",
       "attributes": {
-        "type": "time"
+        "type": "time",
+        "step": "3600"
       }
     },
     {
       "type": "input",
       "messageKey": "hourly_survey_end_time",
-      "defaultValue": "21:00",
+      "defaultValue": "20:00",
       "label": "End time",
       "attributes": {
-        "type": "time"
+        "type": "time",
+        "step": "3600"
       }
     }
   ]
@@ -47,10 +66,11 @@
     {
       "type": "input",
       "messageKey": "daily_survey_time",
-      "defaultValue": "20:00",
+      "defaultValue": "21:00",
       "label": "Survey time",
       "attributes": {
-        "type": "time"
+        "type": "time",
+        "step": "3600"
       }
     }
   ]
@@ -67,6 +87,32 @@
       "min": 5,
       "max": 20
     }
+  ]
+},
+{
+  "type": "section",
+  "items": [
+    {
+      "type": "select",
+      "messageKey": "study_duration",
+      "defaultValue": "10",
+      "label": "Study duration",
+      "description": "How long will I participate in the study ?",
+      "options": [
+        { 
+          "label": "10 days", 
+          "value": 10
+        },
+        { 
+          "label": "30 days",
+          "value": 30 
+        },
+        { 
+          "label": "Forever",
+          "value": 36500 
+        }
+      ]
+    }  
   ]
 },
 { "type": "submit", "defaultValue": "Done" }

@@ -3,7 +3,7 @@ var packageinfo = require('../../package.json');
 var Clay = require('pebble-clay');
 var clayConfig = require('./config.json');
 var customClay = require('./custom-clay');
-var clay = new Clay(clayConfig, customClay, {autoHandleEvents: false});
+var clay = new Clay(clayConfig, customClay);
 
 var ajax = require('./lib/ajax');
 
@@ -39,35 +39,6 @@ Pebble.addEventListener('ready', function(e) {
   }
 
   navigator.geolocation.getCurrentPosition(success, error, {enableHighAccuracy: true});
-});
-
-Pebble.addEventListener('showConfiguration', function(e) {
-  Pebble.openURL(clay.generateUrl());
-});
-
-Pebble.addEventListener('webviewclosed', function(e) {
-  if (e && !e.response) { return; }
-
-  var settings = clay.getSettings(e.response);
-
-  var time = settings['hourly_survey_start_time'].split(':');
-  settings['hourly_survey_start_time'] = parseInt(time[0])*60 + parseInt(time[1]);
-
-  time = settings['hourly_survey_end_time'].split(':');
-  settings['hourly_survey_end_time'] = parseInt(time[0])*60 + parseInt(time[1]);
-
-  time = settings['daily_survey_time'].split(':');
-  settings['daily_survey_time'] = parseInt(time[0])*60 + parseInt(time[1]);
-
-  console.log(JSON.stringify(settings));
-
-  // Send settings to Pebble watchapp
-  Pebble.sendAppMessage(settings, function(e) {
-    console.log('Sent config data to Pebble');
-  }, function() {
-    console.log('Failed to send config data!');
-    console.log(JSON.stringify(e));
-  });
 });
 
 function sendPackets(packets, id, cache) {
