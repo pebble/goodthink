@@ -14,15 +14,15 @@ var OWMWeather = function() {
   this.getWeather = function(pos, successCb) {
     var url = 'http://api.openweathermap.org/data/2.5/weather?lat=' +
       pos.coords.latitude + '&lon=' + pos.coords.longitude + '&appid=' + this._apiKey;
-    console.log('owm-weather: Location success. Contacting OpenWeatherMap.org...');
+    // console.log('owm-weather: Location success. Contacting OpenWeatherMap.org...');
 
     this._xhrWrapper(url, 'GET', function(responseText) {
-      console.log('owm-weather: Got API response!');
+      // console.log('owm-weather: Got API response!');
       if(responseText.length > 100) {
         if(successCb)
           successCb(JSON.parse(responseText));
       } else {
-        console.log('owm-weather: API response was bad. Wrong API key?');
+        // console.log('owm-weather: API response was bad. Wrong API key?');
         Pebble.sendAppMessage({ 'OWMWeatherAppMessageKeyBadKey': 1 });
       }
     });

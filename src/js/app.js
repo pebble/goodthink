@@ -16,12 +16,11 @@ var timeline_token = "";
 
 function success_weather(weather_) {
   weather = weather_;
-  console.log(JSON.stringify(weather));
+  // console.log(JSON.stringify(weather));
 }
 
 Pebble.addEventListener('ready', function(e) {
   console.log(packageinfo.pebble.displayName + " " + packageinfo.version + " ready !");
-
   Pebble.getTimelineToken(function(token) {
     timeline_token = token;
   }, function(error) {
@@ -29,19 +28,19 @@ Pebble.addEventListener('ready', function(e) {
   });
 
   function success(pos) {
-    console.log('location ok');
+    // console.log('location ok');
     owmWeather.getWeather(pos, success_weather);
     coordinates = pos.coords;
   }
 
   function error(err) {
-    console.log('location error (' + err.code + '): ' + err.message);
+    console.log('location error');
   }
 
   navigator.geolocation.getCurrentPosition(success, error, {enableHighAccuracy: true});
 });
 
-function sendPackets(packets, id, cache) {
+function sendPackets(packets, id, cache, send_response) {
   console.log(JSON.stringify(packets[id]));
   ajax(
     {
@@ -52,27 +51,29 @@ function sendPackets(packets, id, cache) {
     },
     function(data, status, request) {
       if(id > 0) {
-        sendPackets(packets, id-1, cache);
+        sendPackets(packets, id-1, cache, send_response);
       }
       else {
-        console.log("cachedPackets " + JSON.stringify(cache));
+        // console.log("cachedPackets " + JSON.stringify(cache));
         localStorage.setItem("cachedPackets", JSON.stringify(cache));
-        Pebble.sendAppMessage({'send_response': 1});
+        if(send_response)
+          Pebble.sendAppMessage({'send_response': 1});
       }
     },
     function(error, status, request) {
-      console.log('The ajax request failed: ' + error);
+      console.log('The ajax request failed: ' + JSON.stringify(error));
       console.log("Caching data for next attempt");
 
       cache.push(packets[id]);
 
       if(id > 0) {
-        sendPackets(packets, id-1, cache);
+        sendPackets(packets, id-1, cache, send_response);
       }
       else {
-        console.log("cachedPackets " + JSON.stringify(cache));
+        // console.log("cachedPackets " + JSON.stringify(cache));
         localStorage.setItem("cachedPackets", JSON.stringify(cache));
-        Pebble.sendAppMessage({'send_response': 1});
+        if(send_response)
+          Pebble.sendAppMessage({'send_response': 1});
       }
       
     }
@@ -106,5 +107,5 @@ Pebble.addEventListener('appmessage', function(e) {
   packets.push(e.payload);
 
   // Send data
-  sendPackets(packets, packets.length-1, []);
+  sendPackets(packets, packets.length-1, [], e.payload.event_type < 2);
 });

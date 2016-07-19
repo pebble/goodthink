@@ -114,10 +114,22 @@ static void prv_inbox_received_callback(DictionaryIterator *iter, void *context)
 }
 
 static void prv_outbox_failed_callback(DictionaryIterator *iterator, AppMessageResult reason, void *context){
+  APP_LOG(0, "prv_outbox_failed_callback %d", reason);
   if(s_oldKey == 0){
-    saveOldData();
+    Tuple *tuple_response = dict_find(iterator, MESSAGE_KEY_event_type);
+    if(tuple_response && tuple_response->value->uint32 < EVENT_TYPE_START){
+      saveOldData();
+    }
   }
   s_oldKey = 0;
+}
+
+static void prv_send_stop_survey(void *data){
+  send_stop_survey(time(NULL));
+}
+
+static void prv_send_start_survey(void *data){
+  send_start_survey(time(NULL));
 }
 
 static void prv_set_optin(bool optin){
@@ -136,9 +148,9 @@ static void prv_set_optin(bool optin){
       time_t now = time(0);
       time_t start_time;
       persist_read_data(PKEY_START_TIME,&start_time,sizeof(time_t));
-      APP_LOG(0, "%ld %d ", start_time, enamel_get_study_duration());
       if(now > start_time + enamel_get_study_duration() * SECONDS_PER_DAY){
         cancel_events();
+        app_timer_register(3000, prv_send_stop_survey, NULL);
         dialog_choice_window_push(
           PBL_IF_ROUND_ELSE("Thank you for your participation.\n\nStay tuned for\nyour results.","Thank you for your participation.\n\nStay tuned for your results."), 
           RESOURCE_ID_IMAGE_HAPPY, 
@@ -164,6 +176,7 @@ static void prv_set_optin(bool optin){
     else 
     {
       cancel_events();
+      app_timer_register(3000, prv_send_start_survey, NULL);
       dialog_choice_window_push(
           PBL_IF_ROUND_ELSE("Welcome to the Happiness App\nLet's get started with your first\ncheck-in!","Welcome to the Happiness App\n\nLet's get started with your first\ncheck-in!"), 
           RESOURCE_ID_IMAGE_HAPPY,  
@@ -210,6 +223,8 @@ static void init(){
 
   s_inbox_received_handle = events_app_message_register_inbox_received(prv_inbox_received_callback, NULL);
   s_outbox_failed_handle = events_app_message_register_outbox_failed(prv_outbox_failed_callback, NULL);
+
+  events_app_message_request_outbox_size(3000);
 
   events_app_message_open(); 
 
