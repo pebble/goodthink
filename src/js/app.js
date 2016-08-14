@@ -1,13 +1,13 @@
-var appinfo = require('appinfo.json');
+var packageinfo = require('../../package.json');
 
-var Clay = require('lib/clay');
-var clayConfig = require('config.json');
-var customClay = require('custom-clay');
-var clay = new Clay(clayConfig, customClay, {autoHandleEvents: false});
+var Clay = require('pebble-clay');
+var clayConfig = require('./config.json');
+var customClay = require('./custom-clay');
+var clay = new Clay(clayConfig, customClay);
 
-var ajax = require('lib/ajax');
+var ajax = require('./lib/ajax');
 
-var OWMWeather = require('lib/owm_weather.js')
+var OWMWeather = require('./lib/owm_weather.js')
 var owmWeather = new OWMWeather();
 
 var coordinates = null;
@@ -16,12 +16,11 @@ var timeline_token = "";
 
 function success_weather(weather_) {
   weather = weather_;
-  console.log(JSON.stringify(weather));
+  // console.log(JSON.stringify(weather));
 }
 
 Pebble.addEventListener('ready', function(e) {
-  console.log(appinfo.longName + " " + appinfo.versionLabel + " ready !");
-
+  console.log(packageinfo.pebble.displayName + " " + packageinfo.version + " ready !");
   Pebble.getTimelineToken(function(token) {
     timeline_token = token;
   }, function(error) {
@@ -29,48 +28,19 @@ Pebble.addEventListener('ready', function(e) {
   });
 
   function success(pos) {
-    console.log('location ok');
+    // console.log('location ok');
     owmWeather.getWeather(pos, success_weather);
     coordinates = pos.coords;
   }
 
   function error(err) {
-    console.log('location error (' + err.code + '): ' + err.message);
+    console.log('location error');
   }
 
   navigator.geolocation.getCurrentPosition(success, error, {enableHighAccuracy: true});
 });
 
-Pebble.addEventListener('showConfiguration', function(e) {
-  Pebble.openURL(clay.generateUrl());
-});
-
-Pebble.addEventListener('webviewclosed', function(e) {
-  if (e && !e.response) { return; }
-
-  var settings = clay.getSettings(e.response);
-
-  var time = settings['hourly_survey_start_time'].split(':');
-  settings['hourly_survey_start_time'] = parseInt(time[0])*60 + parseInt(time[1]);
-
-  time = settings['hourly_survey_end_time'].split(':');
-  settings['hourly_survey_end_time'] = parseInt(time[0])*60 + parseInt(time[1]);
-
-  time = settings['daily_survey_time'].split(':');
-  settings['daily_survey_time'] = parseInt(time[0])*60 + parseInt(time[1]);
-
-  console.log(JSON.stringify(settings));
-
-  // Send settings to Pebble watchapp
-  Pebble.sendAppMessage(settings, function(e) {
-    console.log('Sent config data to Pebble');
-  }, function() {
-    console.log('Failed to send config data!');
-    console.log(JSON.stringify(e));
-  });
-});
-
-function sendPackets(packets, id, cache) {
+function sendPackets(packets, id, cache, send_response) {
   console.log(JSON.stringify(packets[id]));
   ajax(
     {
@@ -81,27 +51,29 @@ function sendPackets(packets, id, cache) {
     },
     function(data, status, request) {
       if(id > 0) {
-        sendPackets(packets, id-1, cache);
+        sendPackets(packets, id-1, cache, send_response);
       }
       else {
-        console.log("cachedPackets " + JSON.stringify(cache));
+        // console.log("cachedPackets " + JSON.stringify(cache));
         localStorage.setItem("cachedPackets", JSON.stringify(cache));
-        Pebble.sendAppMessage({'send_response': 1});
+        if(send_response)
+          Pebble.sendAppMessage({'send_response': 1});
       }
     },
     function(error, status, request) {
-      console.log('The ajax request failed: ' + error);
+      console.log('The ajax request failed: ' + JSON.stringify(error));
       console.log("Caching data for next attempt");
 
       cache.push(packets[id]);
 
       if(id > 0) {
-        sendPackets(packets, id-1, cache);
+        sendPackets(packets, id-1, cache, send_response);
       }
       else {
-        console.log("cachedPackets " + JSON.stringify(cache));
+        // console.log("cachedPackets " + JSON.stringify(cache));
         localStorage.setItem("cachedPackets", JSON.stringify(cache));
-        Pebble.sendAppMessage({'send_response': 1});
+        if(send_response)
+          Pebble.sendAppMessage({'send_response': 1});
       }
       
     }
@@ -135,5 +107,5 @@ Pebble.addEventListener('appmessage', function(e) {
   packets.push(e.payload);
 
   // Send data
-  sendPackets(packets, packets.length-1, []);
+  sendPackets(packets, packets.length-1, [], e.payload.event_type < 2);
 });

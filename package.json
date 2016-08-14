@@ -1,0 +1,184 @@
+{
+  "version": "1.0.0",
+  "author": "Pebble",
+  "private": true,
+  "dependencies": {
+    "enamel": "^1.1.4",
+    "pebble-clay": "^1.0.2"
+  },
+  "keywords": [
+    "pebble-app"
+  ],
+  "pebble": {
+    "sdkVersion": "3",
+    "resources": {
+      "media": [
+        {
+          "type": "bitmap",
+          "name": "IMAGE_HAPPY",
+          "file": "images/happy.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "IMAGE_MOOD",
+          "file": "images/mood.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "IMAGE_SENDING",
+          "file": "images/sending.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "IMAGE_HOUR",
+          "file": "images/hour.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "IMAGE_DAY",
+          "file": "images/day.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "IMAGE_SPECTRUM",
+          "file": "images/spectrum.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "IMAGE_MOODS",
+          "file": "images/moods.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "IMAGE_UP",
+          "file": "images/up.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "IMAGE_DOWN",
+          "file": "images/down.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "IMAGE_UP2",
+          "file": "images/up2.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "IMAGE_DOWN2",
+          "file": "images/down2.png"
+        },
+        {
+          "memoryFormat": "1Bit",
+          "type": "bitmap",
+          "name": "IMAGE_SELECT",
+          "file": "images/select.png"
+        },
+        {
+          "memoryFormat": "1Bit",
+          "type": "bitmap",
+          "name": "IMAGE_UNCHECKED",
+          "file": "images/unchecked.png"
+        },
+        {
+          "memoryFormat": "1Bit",
+          "type": "bitmap",
+          "name": "IMAGE_CROSS",
+          "file": "images/cross.png"
+        },
+        {
+          "memoryFormat": "1Bit",
+          "type": "bitmap",
+          "name": "IMAGE_ZZZ",
+          "file": "images/zzz.png"
+        },
+        {
+          "memoryFormat": "1Bit",
+          "type": "bitmap",
+          "name": "IMAGE_TICK",
+          "file": "images/tick.png"
+        },
+        {
+          "memoryFormat": "1Bit",
+          "type": "bitmap",
+          "name": "IMAGE_TICK2",
+          "file": "images/tick2.png"
+        },
+        {
+          "type": "raw",
+          "name": "CONFIRM_SEQUENCE",
+          "file": "pdc/confirm_sequence.pdc"
+        },
+        {
+          "type": "raw",
+          "name": "SENT_SEQUENCE",
+          "file": "pdc/sent_sequence.pdc"
+        },
+        {
+          "type": "bitmap",
+          "name": "IMAGE_WARNING",
+          "file": "images/warning.png"
+        },
+        {
+          "type": "raw",
+          "name": "DISMISS_SEQUENCE",
+          "file": "pdc/dismiss_sequence.pdc"
+        }
+      ]
+    },
+    "projectType": "native",
+    "uuid": "8d1fb143-fa2a-4f1c-9361-2542f14cda72",
+    "messageKeys": {
+      "location_other": 1009,
+      "event_type": 105,
+      "people_other": 1007,
+      "health_minute_vmc": 1109,
+      "health_sleeprestfulseconds": 1104,
+      "feeling_day_more": 2003,
+      "people_id": 1003,
+      "hourly_survey_start_time": 10000,
+      "location_id": 1006,
+      "satisfaction_level": 2001,
+      "send_response": 10,
+      "user_time": 1010,
+      "health_stepcount": 1100,
+      "daily_survey_time": 10002,
+      "health_minute_orientation": 1108,
+      "health_walkeddistancemeters": 1102,
+      "feeling_id": 2002,
+      "health_restingkcalories": 1105,
+      "hourly_survey_end_time": 10001,
+      "is_old": 1011,
+      "health_activeseconds": 1101,
+      "activity_other": 1008,
+      "snooze_option": 10003,
+      "activity_ids": 1004,
+      "health_minute_is_invalid": 1110,
+      "activity_data": 1005,
+      "mood_id": 1002,
+      "health_minute_steps": 1107,
+      "health_sleepseconds": 1103,
+      "health_activekcalories": 1106,
+      "optin": 10004,
+      "energy_score": 1001,
+      "study_duration": 10005,
+      "hourly_popups": 10006
+    },
+    "enableMultiJS": true,
+    "displayName": "Emotion Study",
+    "watchapp": {
+      "onlyShownOnCommunication": false,
+      "hiddenApp": false,
+      "watchface": false
+    },
+    "targetPlatforms": [
+      "basalt",
+      "chalk"
+    ],
+    "capabilities": [
+      "configurable",
+      "health"
+    ]
+  },
+  "name": "EmotionStudy"
+}

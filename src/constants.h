@@ -94,3 +94,8 @@ static const uint8_t LOCATION_IDS[NB_OF_LOCATIONS] = {
 #define DAILY_SURVEY_MESSAGE  "Start the daily survey?"
 
 #define MAX_TEXT_LENGTH 255
+
+#define EVENT_TYPE_HOURLY 0
+#define EVENT_TYPE_DAILY  1
+#define EVENT_TYPE_START  2
+#define EVENT_TYPE_END    3
